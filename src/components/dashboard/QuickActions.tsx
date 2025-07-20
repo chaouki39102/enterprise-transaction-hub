@@ -1,5 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { CreateInvoiceDialog } from '@/components/common/CreateInvoiceDialog';
+import { useNavigate } from 'react-router-dom';
 import { 
   Plus, 
   FileText, 
@@ -49,6 +51,8 @@ const quickActions = [
 ];
 
 export function QuickActions() {
+  const navigate = useNavigate();
+  
   const getButtonColor = (color: string) => {
     switch (color) {
       case 'primary':
@@ -62,6 +66,25 @@ export function QuickActions() {
     }
   };
 
+  const handleActionClick = (index: number) => {
+    switch (index) {
+      case 1: // إضافة عميل
+        navigate('/customers');
+        break;
+      case 2: // إضافة منتج
+        navigate('/products');
+        break;
+      case 3: // تسجيل دفعة
+        navigate('/invoices');
+        break;
+      case 4: // عرض التقارير
+        navigate('/reports');
+        break;
+      default:
+        break;
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -69,19 +92,39 @@ export function QuickActions() {
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-2 gap-4">
-          {quickActions.map((action, index) => (
-            <Button
-              key={index}
-              variant="outline"
-              className={`h-auto p-4 flex flex-col items-center space-y-2 text-center hover-lift ${getButtonColor(action.color)}`}
-            >
-              <action.icon className="h-8 w-8" />
-              <div>
-                <p className="font-medium text-sm">{action.label}</p>
-                <p className="text-xs opacity-80 mt-1">{action.description}</p>
-              </div>
-            </Button>
-          ))}
+          {quickActions.map((action, index) => {
+            if (index === 0) {
+              return (
+                <CreateInvoiceDialog key={index}>
+                  <Button
+                    variant="outline"
+                    className={`h-auto p-4 flex flex-col items-center space-y-2 text-center hover-lift ${getButtonColor(action.color)}`}
+                  >
+                    <action.icon className="h-8 w-8" />
+                    <div>
+                      <p className="font-medium text-sm">{action.label}</p>
+                      <p className="text-xs opacity-80 mt-1">{action.description}</p>
+                    </div>
+                  </Button>
+                </CreateInvoiceDialog>
+              );
+            }
+            
+            return (
+              <Button
+                key={index}
+                variant="outline"
+                className={`h-auto p-4 flex flex-col items-center space-y-2 text-center hover-lift ${getButtonColor(action.color)}`}
+                onClick={() => handleActionClick(index)}
+              >
+                <action.icon className="h-8 w-8" />
+                <div>
+                  <p className="font-medium text-sm">{action.label}</p>
+                  <p className="text-xs opacity-80 mt-1">{action.description}</p>
+                </div>
+              </Button>
+            );
+          })}
         </div>
       </CardContent>
     </Card>

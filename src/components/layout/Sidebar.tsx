@@ -8,11 +8,15 @@ import {
   BarChart3,
   Settings,
   ChevronDown,
-  ChevronLeft
+  ChevronLeft,
+  Home,
+  ShoppingCart,
+  Warehouse
 } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 interface SidebarItemProps {
   icon: React.ComponentType<any>;
@@ -20,10 +24,20 @@ interface SidebarItemProps {
   active?: boolean;
   hasSubmenu?: boolean;
   submenuItems?: { label: string; href: string }[];
+  href?: string;
 }
 
-function SidebarItem({ icon: Icon, label, active = false, hasSubmenu = false, submenuItems = [] }: SidebarItemProps) {
+function SidebarItem({ icon: Icon, label, active = false, hasSubmenu = false, submenuItems = [], href }: SidebarItemProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    if (hasSubmenu) {
+      setIsOpen(!isOpen);
+    } else if (href) {
+      navigate(href);
+    }
+  };
 
   return (
     <div className="w-full">
@@ -33,7 +47,7 @@ function SidebarItem({ icon: Icon, label, active = false, hasSubmenu = false, su
           "w-full justify-start gap-3 text-sidebar-text hover:bg-primary/10 hover:text-primary",
           active && "bg-primary text-primary-foreground shadow-md"
         )}
-        onClick={() => hasSubmenu && setIsOpen(!isOpen)}
+        onClick={handleClick}
       >
         <Icon className="h-5 w-5" />
         <span className="flex-1 text-right">{label}</span>
@@ -49,6 +63,7 @@ function SidebarItem({ icon: Icon, label, active = false, hasSubmenu = false, su
               key={item.label}
               variant="ghost"
               className="w-full justify-start gap-3 text-sm text-sidebar-text/80 hover:bg-primary/5 hover:text-primary pr-8"
+              onClick={() => navigate(item.href)}
             >
               <ChevronLeft className="h-3 w-3" />
               <span className="flex-1 text-right">{item.label}</span>
@@ -61,82 +76,110 @@ function SidebarItem({ icon: Icon, label, active = false, hasSubmenu = false, su
 }
 
 export function Sidebar() {
+  const location = useLocation();
+  const currentPath = location.pathname;
+
   const menuItems = [
     {
-      icon: LayoutDashboard,
+      icon: Home,
       label: "لوحة التحكم",
-      active: true
+      active: currentPath === "/",
+      href: "/"
     },
     {
       icon: Users,
       label: "إدارة العملاء",
+      active: currentPath === "/customers",
+      href: "/customers",
       hasSubmenu: true,
       submenuItems: [
-        { label: "جميع العملاء", href: "/customers" },
+        { label: "قائمة العملاء", href: "/customers" },
         { label: "إضافة عميل جديد", href: "/customers/new" },
-        { label: "تقارير العملاء", href: "/customers/reports" }
+        { label: "العملاء المحذوفين", href: "/customers/deleted" }
       ]
     },
     {
       icon: Package,
       label: "إدارة المنتجات",
+      active: currentPath === "/products",
+      href: "/products",
       hasSubmenu: true,
       submenuItems: [
-        { label: "جميع المنتجات", href: "/products" },
-        { label: "إضافة منتج", href: "/products/new" },
-        { label: "إدارة المخزون", href: "/inventory" },
-        { label: "حركات المخزون", href: "/stock-movements" }
+        { label: "قائمة المنتجات", href: "/products" },
+        { label: "إضافة منتج جديد", href: "/products/new" },
+        { label: "فئات المنتجات", href: "/products/categories" },
+        { label: "إدارة المخزون", href: "/products/inventory" }
       ]
     },
     {
       icon: FileText,
       label: "الفواتير والمبيعات",
+      active: currentPath === "/invoices",
+      href: "/invoices",
       hasSubmenu: true,
       submenuItems: [
-        { label: "إنشاء فاتورة", href: "/invoices/new" },
-        { label: "جميع الفواتير", href: "/invoices" },
-        { label: "عروض الأسعار", href: "/quotes" },
-        { label: "المرتجعات", href: "/returns" }
+        { label: "قائمة الفواتير", href: "/invoices" },
+        { label: "إنشاء فاتورة جديدة", href: "/invoices/new" },
+        { label: "عروض الأسعار", href: "/invoices/quotes" },
+        { label: "أوامر البيع", href: "/invoices/orders" }
       ]
     },
     {
-      icon: Truck,
-      label: "المشتريات",
+      icon: ShoppingCart,
+      label: "إدارة المشتريات",
+      active: false,
       hasSubmenu: true,
       submenuItems: [
-        { label: "طلبات الشراء", href: "/purchase-orders" },
-        { label: "فواتير المشتريات", href: "/purchase-invoices" },
-        { label: "إدارة الموردين", href: "/suppliers" }
+        { label: "طلبات الشراء", href: "/purchases" },
+        { label: "فواتير المشتريات", href: "/purchases/invoices" },
+        { label: "الموردين", href: "/suppliers" }
+      ]
+    },
+    {
+      icon: Warehouse,
+      label: "إدارة المخزون",
+      active: false,
+      hasSubmenu: true,
+      submenuItems: [
+        { label: "حركة المخزون", href: "/inventory/movements" },
+        { label: "جرد المخزون", href: "/inventory/count" },
+        { label: "المستودعات", href: "/inventory/warehouses" },
+        { label: "تحويلات المخزون", href: "/inventory/transfers" }
       ]
     },
     {
       icon: CreditCard,
-      label: "الخزينة والمدفوعات",
+      label: "إدارة الخزينة",
+      active: false,
       hasSubmenu: true,
       submenuItems: [
-        { label: "المقبوضات", href: "/payments/received" },
-        { label: "المدفوعات", href: "/payments/made" },
-        { label: "الشيكات", href: "/checks" },
-        { label: "الحسابات البنكية", href: "/bank-accounts" }
+        { label: "المقبوضات", href: "/treasury/receipts" },
+        { label: "المدفوعات", href: "/treasury/payments" },
+        { label: "الحسابات البنكية", href: "/treasury/accounts" },
+        { label: "الشيكات", href: "/treasury/checks" }
       ]
     },
     {
       icon: BarChart3,
-      label: "التقارير والتحليلات",
+      label: "التقارير",
+      active: currentPath === "/reports",
+      href: "/reports",
       hasSubmenu: true,
       submenuItems: [
         { label: "تقارير المبيعات", href: "/reports/sales" },
-        { label: "تقارير المخزون", href: "/reports/inventory" },
-        { label: "تقارير مالية", href: "/reports/financial" },
-        { label: "تحليل الأداء", href: "/reports/performance" }
+        { label: "تقارير المشتريات", href: "/reports/purchases" },
+        { label: "تقارير العملاء", href: "/reports/customers" },
+        { label: "تقارير المخزون", href: "/reports/inventory" }
       ]
     },
     {
       icon: Settings,
       label: "الإعدادات",
+      active: currentPath === "/settings",
+      href: "/settings",
       hasSubmenu: true,
       submenuItems: [
-        { label: "إعدادات النظام", href: "/settings/system" },
+        { label: "إعدادات النظام", href: "/settings" },
         { label: "إدارة المستخدمين", href: "/settings/users" },
         { label: "الصلاحيات", href: "/settings/permissions" },
         { label: "النسخ الاحتياطي", href: "/settings/backup" }
@@ -155,6 +198,7 @@ export function Sidebar() {
             active={item.active}
             hasSubmenu={item.hasSubmenu}
             submenuItems={item.submenuItems}
+            href={item.href}
           />
         ))}
       </div>
