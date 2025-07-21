@@ -14,17 +14,23 @@ import {
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
       <Header />
       
       <div className="flex">
         <Sidebar />
         
-        <main className="flex-1 p-6 space-y-6">
+        <main className="flex-1 p-6 space-y-8">
           {/* Welcome Section */}
-          <div className="animate-fade-in">
-            <h1 className="text-3xl font-bold text-foreground mb-2">مرحباً بك في نظام تسيير المبيعات</h1>
-            <p className="text-muted-foreground">نظرة شاملة على أداء مبيعاتك ومخزونك</p>
+          <div className="animate-fade-in relative">
+            <div className="glass-card p-8 animated-border">
+              <h1 className="text-4xl font-bold gradient-text mb-3">مرحباً بك في نظام تسيير المبيعات</h1>
+              <p className="text-lg text-muted-foreground">نظرة شاملة على أداء مبيعاتك ومخزونك مع تحليلات ذكية</p>
+              <div className="flex items-center gap-2 mt-4">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span className="text-sm text-green-600 dark:text-green-400">النظام يعمل بشكل مثالي</span>
+              </div>
+            </div>
           </div>
 
           {/* Statistics Cards */}

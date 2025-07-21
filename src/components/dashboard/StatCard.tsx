@@ -23,35 +23,33 @@ export function StatCard({
   className 
 }: StatCardProps) {
   const colorClasses = {
-    primary: 'text-primary bg-primary/10',
-    success: 'text-success bg-success/10',
-    warning: 'text-warning bg-warning/10',
-    destructive: 'text-destructive bg-destructive/10'
+    primary: 'from-blue-500 via-purple-500 to-blue-600',
+    success: 'from-green-500 via-emerald-500 to-green-600',
+    warning: 'from-yellow-500 via-orange-500 to-yellow-600',
+    destructive: 'from-red-500 via-pink-500 to-red-600'
   };
 
   return (
-    <Card className={cn("dashboard-stat-card", className)}>
+    <Card className={cn("glass-card hover:scale-[1.02] transition-all duration-500 group", className)}>
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
-          <div className="space-y-2">
-            <p className="text-sm font-medium text-muted-foreground">{title}</p>
-            <div className="flex items-center space-x-2">
-              <p className="dashboard-stat-value">{value}</p>
-              {change && (
+          <div className="flex-1">
+            <p className="text-sm text-muted-foreground mb-2 font-medium">{title}</p>
+            <p className="text-3xl font-bold mb-1 tracking-tight">{value}</p>
+            {change && (
+              <div className="flex items-center gap-1">
                 <span className={cn(
-                  "text-xs font-medium",
-                  change.type === 'increase' ? 'text-success' : 'text-destructive'
+                  "text-sm font-semibold",
+                  change.type === 'increase' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
                 )}>
-                  {change.type === 'increase' ? '+' : '-'}{Math.abs(change.value)}%
+                  {change.type === 'increase' ? '↗' : '↘'} {change.value}%
                 </span>
-              )}
-            </div>
+                <span className="text-xs text-muted-foreground">من الشهر الماضي</span>
+              </div>
+            )}
           </div>
-          <div className={cn(
-            "p-3 rounded-full",
-            colorClasses[color]
-          )}>
-            <Icon className="h-6 w-6" />
+          <div className={cn("p-4 rounded-2xl bg-gradient-to-r shadow-lg group-hover:scale-110 transition-transform", colorClasses[color])}>
+            <Icon className="h-7 w-7 text-white" />
           </div>
         </div>
       </CardContent>

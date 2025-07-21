@@ -125,27 +125,16 @@ export function Sidebar() {
       ]
     },
     {
-      icon: ShoppingCart,
-      label: "إدارة المشتريات",
-      active: false,
-      hasSubmenu: true,
-      submenuItems: [
-        { label: "طلبات الشراء", href: "/purchases" },
-        { label: "فواتير المشتريات", href: "/purchases/invoices" },
-        { label: "الموردين", href: "/suppliers" }
-      ]
+      icon: Warehouse,
+      label: "المخزون",
+      active: currentPath === "/inventory",
+      href: "/inventory"
     },
     {
-      icon: Warehouse,
-      label: "إدارة المخزون",
-      active: false,
-      hasSubmenu: true,
-      submenuItems: [
-        { label: "حركة المخزون", href: "/inventory/movements" },
-        { label: "جرد المخزون", href: "/inventory/count" },
-        { label: "المستودعات", href: "/inventory/warehouses" },
-        { label: "تحويلات المخزون", href: "/inventory/transfers" }
-      ]
+      icon: BarChart3,
+      label: "التحليلات",
+      active: currentPath === "/analytics",
+      href: "/analytics"
     },
     {
       icon: CreditCard,
